@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>자바스크립트 영화 페이지 개인과제 - 정희윤</title>
+
+    <!-- css로 꾸미기 -->
+    <style>
+        .card-img-top {
+            text-align: center;
+            display: table;
+            border: 1px solid #cecece;
+            width: 400px;
+            height: 600px;
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center
+        }
+
+        .search {
+            width: 95%;
+            max-width: 187px;
+            margin: 20px auto 20px auto;
+
+            box-shadow: 0px 0px 3px 0px black;
+            padding: 20px;
+        }
+
+        .search>button {
+            margin-top: 15px;
+        }
+    </style>
+
+    <!-- 자바스크립트로 꾸미기 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.querySelector('h1')
+            header.textContent = '자바스크립트 영화 페이지 개인과제'
+            header.style.color = 'white'
+            header.style.backgroundColor = 'black'
+            header.style.padding = '20px'
+        })
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const card = document.querySelector('body')
+            card.style.color = 'yellow'
+            card.style.backgroundColor = 'green'
+            card.style.padding = '10px'
+        })
+
+        //페이지 실행시 get_movie라는 함수 실행()
+        document.addEventListener('DOMContentLoaded', () => {
+            get_movie()
+        })
+
+        //API 요청 인증
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzODQ3MDk1MDRlNDU2MzVhODIzZGI1NzU2MjcwOGRmZCIsInN1YiI6IjY0NzVjYzAzOTI0Y2U2MDExNmM2MzFiMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.wTEXgFl_cqY1LXNg5AtUwKeXwJfLHlKcwalquo0E590'
+            }
+        };
+
+        // cards라는 id를 가진 곳에 보내라
+        const cards = document.querySelector('#cards')
+
+        //get_movie라는 함수 작성
+        function get_movie() {
+            //API 주소 기입, options는 method를 적어주는 곳인데 get의 경우 삭제 가능
+            fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1' //, options 
+            )
+                .then(response => response.json())
+                .then(data => {
+                    let rows = data['results']
+                    let temp_html =
+                        // 일단 cards의 내용을 비워줌
+                        document.querySelector("#cards").innerHTML = ""
+
+                        // API에서 아래 내용물들을 뽑아와서 이름을 정해줌
+                        rows.forEach((a) => {
+                        let id = a.id //a['id']의 형태에서 수정한것
+                        let title = a.title
+                        let overview = a.overview
+                        let poster_path = a.poster_path
+                        let vote_average = a.vote_average
+
+                        // 영화 정보가 들어갈 각 카드의 내용
+                        temp_html = `<div style="width:400px; height:1100px; border:1px solid black; float:left; margin-right:10px;">
+                                                <a href="#"><img src="https://image.tmdb.org/t/p/original/${poster_path}"
+                                                        onclick="alert(${id})" class="card-img-top"></a>
+                                                <div class="card-body">
+                                                    <h3 class="title">${title}</h3>
+                                                    <p class="overview">${overview}</p>
+                                                    <p class="vote_average">Rating: ${vote_average}</p>
+                                                </div>
+                                            </div>`
+
+                        // 내용을 cards에 보내줌
+                        document.querySelector("#cards").insertAdjacentHTML("beforeend", temp_html);
+
+                    })
+                })
+                //에러가 생겼을 경우 아래 내용 실행
+                .catch(err => console.error(err));
+        }
+
+
+        // 영화 검색 기능, 기본적으로 위 내용과 상이
+        function search_movie() {
+            const text = document.querySelector('#name').value
+
+            const options = {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzODQ3MDk1MDRlNDU2MzVhODIzZGI1NzU2MjcwOGRmZCIsInN1YiI6IjY0NzVjYzAzOTI0Y2U2MDExNmM2MzFiMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.wTEXgFl_cqY1LXNg5AtUwKeXwJfLHlKcwalquo0E590'
+                }
+            };
+
+            const cards = document.querySelector('#cards')
+
+            // search API 주소를 기입
+            fetch(`https://api.themoviedb.org/3/search/movie?query=${text}&include_adult=false&language=en-US&page=1`//, options
+            )
+                .then(response => response.json())
+                .then(data => {
+                    let rows = data['results']
+                    let temp_html =
+                        document.querySelector("#cards").innerHTML = ""
+                    rows.forEach((a) => {
+                        let id = a.id
+                        let title = a.title
+                        let overview = a.overview
+                        let poster_path = a.poster_path
+                        let vote_average = a.vote_average
+
+                        temp_html = `<div style="width:400px; height:1100px; border:1px solid black; float:left; margin-right:10px;">
+                                                <a href="#"><img src="https://image.tmdb.org/t/p/original/${poster_path}"
+                                                        onclick="alert(${id})" class="card-img-top"></a>
+                                                <div class="card-body">
+                                                    <h3 class="title">${title}</h3>
+                                                    <p class="overview">${overview}</p>
+                                                    <p class="vote_average">Rating: ${vote_average}</p>
+                                                </div>
+                                            </div>`
+                        //jquery의 append에 해당, 검색했을 때 해당되는 것이 여럿 나올 경우 뒤에 붙여주는 역할
+                        document.querySelector("#cards").insertAdjacentHTML("beforeend", temp_html);
+                    })
+                    document.innerHTML("#cards").innerHTML = temp_html
+                })
+                .catch(err => console.error(err));
+        }
+    </script>
+</head>
+
+<body>
+    <h1></h1>
+    <!-- 검색창 구현 -->
+    <div class="search">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="name" placeholder="Title" />
+        </div>
+        <div class="form-floating">
+        </div>
+        <button class="search" onclick="search_movie()" type="button">
+            Search
+        </button>
+    </div>
+    <div id="cards">
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+</body>
+
+</html>
