@@ -1,0 +1,39 @@
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>스파르타피디야ㅑㅑㅑ</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <header>
+      <div>
+        <div class="transparent">
+          <!-- 타이틀을 클릭 시 메인페이지로 이동 -->
+          <a href="./index.html">환장함피디아</a><br />
+        </div>
+        <!-- input 태그에 autofocus 적용으로, 페이지 로드 시 자동으로 검색창에 커서 위치 -->
+        <input
+          id="keyword"
+          type="text"
+          placeholder="검색하실 영화를 입력해주세요."
+          autofocus
+        />
+        <!-- 버튼 클릭 시 input태그의 내용으로 검색하는 search_movie함수 실행 -->
+        <button class="search-button" onclick="search_movie()">검색</button>
+      </div>
+    </header>
+    <main>
+      <section>
+        <a href="details.html?movieId=321">디테일페이지</a>
+        <div id="movie-list">
+          <!-- 영화목록이 innerHTML을 통해 들어올 부분 -->
+        </div>
+      </section>
+    </main>
+  </body>
+  <script type="module" src="./script/main.js">
+  </script>
+</html>
